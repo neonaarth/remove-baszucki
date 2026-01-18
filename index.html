@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>www.removebaszucki.com | Official Community Vote</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        .navbar { background-color: #1a1a1a; color: white; width: 100%; padding: 15px 0; text-align: center; font-weight: bold; font-size: 20px; letter-spacing: 1px; }
+        .navbar span { color: #f44336; }
+        .container { padding: 20px; display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; margin-bottom: 20px; text-align: center; }
+        .total-box { background-color: #333; color: white; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { padding: 10px; border-radius: 8px; color: white; }
+        .stat-remove { background-color: #f44336; }
+        .stat-keep { background-color: #4CAF50; }
+        .chart-container { height: 200px; margin-bottom: 20px; }
+        input[type="email"], button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { background-color: #f44336; color: white; border: none; cursor: pointer; font-weight: bold; }
+        #adminSection { display: none; border-top: 3px solid #2196F3; padding-top: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+<div class="navbar">WWW.<span>REMOVEBASZUCKI</span>.COM</div>
+<div class="container">
+    <div class="card">
+        <h2>Roblox Community Petition</h2>
+        <div class="total-box">TOTAL VERIFIED VOTES: <span id="totalVotes">0</span></div>
+        <div class="stats-grid">
+            <div class="stat-item stat-remove"><div>REMOVE</div><div style="font-size: 24px; font-weight: bold;"><span id="removeCount">0</span></div><div id="removePercent">0%</div></div>
+            <div class="stat-item stat-keep"><div>KEEP</div><div style="font-size: 24px; font-weight: bold;"><span id="keepCount">0</span></div><div id="keepPercent">0%</div></div>
+        </div>
+        <div class="chart-container"><canvas id="voteChart"></canvas></div>
+        <form id="voteForm">
+            <input type="email" id="emailInput" placeholder="name@example.com" required>
+            <div style="margin: 10px 0;">
+                <input type="radio" name="choice" value="Remove" required> Remove 
+                <input type="radio" name="choice" value="Keep"> Keep
+            </div>
+            <button type="submit">SUBMIT OFFICIAL VOTE</button>
+        </form>
+    </div>
+    <div class="card" id="adminSection">
+        <h3 style="color: #2196F3;">Admin Database Access</h3>
+        <table>
+            <thead><tr><th>Email</th><th>Vote</th></tr></thead>
+            <tbody id="adminTableBody"></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    const admins = ["aarthgupta000@gmail.com", "neonaarth@yahoo.com"];
+    let myChart;
+    window.onload = updateDisplay;
+    document.getElementById('voteForm').onsubmit = function(e) {
+        e.preventDefault();
+        const email = document.getElementById('emailInput').value.toLowerCase();
+        const choice = document.querySelector('input[name="choice"]:checked').value;
+        if (admins.includes(email)) { document.getElementById('adminSection').style.display = "block"; }
+        let votes = JSON.parse(localStorage.getItem('robloxVotes')) || [];
+        if(!votes.find(v => v.email === email)) {
+            votes.push({ email: email, choice: choice });
+            localStorage.setItem('robloxVotes', JSON.stringify(votes));
+            alert("Vote recorded!");
+        } else { alert("Already voted!"); }
+        updateDisplay();
+        document.getElementById('voteForm').reset();
+    };
+    function updateDisplay() {
+        let votes = JSON.parse(localStorage.getItem('robloxVotes')) || [];
+        let rCount = votes.filter(v => v.choice === "Remove").length;
+        let kCount = votes.filter(v => v.choice === "Keep").length;
+        let total = votes.length;
+        document.getElementById('totalVotes').innerText = total;
+        document.getElementById('removeCount').innerText = rCount;
+        document.getElementById('keepCount').innerText = kCount;
+        document.getElementById('removePercent').innerText = (total > 0 ? Math.round((rCount/total)*100) : 0) + "%";
+        document.getElementById('keepPercent').innerText = (total > 0 ? Math.round((kCount/total)*100) : 0) + "%";
+        const ctx = document.getElementById('voteChart').getContext('2d');
+        if (myChart) { myChart.destroy(); }
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Remove', 'Keep'],
+                datasets: [{ data: [rCount, kCount], backgroundColor: ['#f44336', '#4CAF50'] }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+        const tableBody = document.getElementById('adminTableBody');
+        tableBody.innerHTML = "";
+        votes.forEach(v => { tableBody.innerHTML += `<tr><td>${v.email}</td><td>${v.choice}</td></tr>`; });
+    }
+</script>
+</body>
+</html>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>www.removebaszucki.com | Official Community Vote</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        .navbar { background-color: #1a1a1a; color: white; width: 100%; padding: 15px 0; text-align: center; font-weight: bold; font-size: 20px; letter-spacing: 1px; }
+        .navbar span { color: #f44336; }
+        .container { padding: 20px; display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; margin-bottom: 20px; text-align: center; }
+        .total-box { background-color: #333; color: white; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-weight: bold; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { padding: 10px; border-radius: 8px; color: white; }
+        .stat-remove { background-color: #f44336; }
+        .stat-keep { background-color: #4CAF50; }
+        .chart-container { height: 200px; margin-bottom: 20px; }
+        input[type="email"], button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { background-color: #f44336; color: white; border: none; cursor: pointer; font-weight: bold; }
+        #adminSection { display: none; border-top: 3px solid #2196F3; padding-top: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+<div class="navbar">WWW.<span>REMOVEBASZUCKI</span>.COM</div>
+<div class="container">
+    <div class="card">
+        <h2>Roblox Community Petition</h2>
+        <div class="total-box">TOTAL VERIFIED VOTES: <span id="totalVotes">0</span></div>
+        <div class="stats-grid">
+            <div class="stat-item stat-remove"><div>REMOVE</div><div style="font-size: 24px; font-weight: bold;"><span id="removeCount">0</span></div><div id="removePercent">0%</div></div>
+            <div class="stat-item stat-keep"><div>KEEP</div><div style="font-size: 24px; font-weight: bold;"><span id="keepCount">0</span></div><div id="keepPercent">0%</div></div>
+        </div>
+        <div class="chart-container"><canvas id="voteChart"></canvas></div>
+        <form id="voteForm">
+            <input type="email" id="emailInput" placeholder="name@example.com" required>
+            <div style="margin: 10px 0;">
+                <input type="radio" name="choice" value="Remove" required> Remove 
+                <input type="radio" name="choice" value="Keep"> Keep
+            </div>
+            <button type="submit">SUBMIT OFFICIAL VOTE</button>
+        </form>
+    </div>
+    <div class="card" id="adminSection">
+        <h3 style="color: #2196F3;">Admin Database Access</h3>
+        <table>
+            <thead><tr><th>Email</th><th>Vote</th></tr></thead>
+            <tbody id="adminTableBody"></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    const admins = ["aarthgupta000@gmail.com", "neonaarth@yahoo.com"];
+    let myChart;
+    window.onload = updateDisplay;
+    document.getElementById('voteForm').onsubmit = function(e) {
+        e.preventDefault();
+        const email = document.getElementById('emailInput').value.toLowerCase();
+        const choice = document.querySelector('input[name="choice"]:checked').value;
+        if (admins.includes(email)) { document.getElementById('adminSection').style.display = "block"; }
+        let votes = JSON.parse(localStorage.getItem('robloxVotes')) || [];
+        if(!votes.find(v => v.email === email)) {
+            votes.push({ email: email, choice: choice });
+            localStorage.setItem('robloxVotes', JSON.stringify(votes));
+            alert("Vote recorded!");
+        } else { alert("Already voted!"); }
+        updateDisplay();
+        document.getElementById('voteForm').reset();
+    };
+    function updateDisplay() {
+        let votes = JSON.parse(localStorage.getItem('robloxVotes')) || [];
+        let rCount = votes.filter(v => v.choice === "Remove").length;
+        let kCount = votes.filter(v => v.choice === "Keep").length;
+        let total = votes.length;
+        document.getElementById('totalVotes').innerText = total;
+        document.getElementById('removeCount').innerText = rCount;
+        document.getElementById('keepCount').innerText = kCount;
+        document.getElementById('removePercent').innerText = (total > 0 ? Math.round((rCount/total)*100) : 0) + "%";
+        document.getElementById('keepPercent').innerText = (total > 0 ? Math.round((kCount/total)*100) : 0) + "%";
+        const ctx = document.getElementById('voteChart').getContext('2d');
+        if (myChart) { myChart.destroy(); }
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Remove', 'Keep'],
+                datasets: [{ data: [rCount, kCount], backgroundColor: ['#f44336', '#4CAF50'] }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+        const tableBody = document. ('adminTableBody');
+        tableBody.innerHTML = "";
+        votes.forEach(v => { tableBody.innerHTML += `<tr><td>${v.email}</td><td>${v.choice}</td></tr>`; });
+    }
+</script>
+</body>
+</html>
+
